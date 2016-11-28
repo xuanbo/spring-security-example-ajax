@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xinQing.springsecurity.dao.UserDao">
+
+    <resultMap id="BaseResultMap" type="xinQing.springsecurity.entity.User">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="attempt_times" property="attemptTimes" jdbcType="INTEGER" />
+        <result column="last_attempt_date" property="lastAttemptDate" jdbcType="DATE" />
+        <result column="account_expired_date" property="accountExpiredDate" jdbcType="DATE" />
+        <result column="credentials_expired_date" property="credentialsExpiredDate" jdbcType="DATE" />
+        <result column="enable" property="enable" jdbcType="BOOLEAN" />
+        <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    </resultMap>
+
+    <!-- 根据用户名查询用户信息 -->
+    <select id="getByUsername"  resultMap="BaseResultMap">
+        select
+        u.id as id,
+        u.username as username,
+        u.password as password,
+        u.attempt_times as attempt_times,
+        u.last_attempt_date as last_attempt_date,
+        u.account_expired_date as account_expired_date,
+        u.credentials_expired_date as credentials_expired_date,
+        u.enable as enable,
+        u.role_id as role_id
+        from user u
+        where u.username = #{username}
+    </select>
+
+    <!-- 属性不为空则更新 -->
+    <update id="updateNotNullById" parameterType="xinQing.springsecurity.entity.User">
+        update user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="attemptTimes != null">
+                attempt_times = #{attemptTimes},
+            </if>
+            <if test="lastAttemptDate != null">
+                last_attempt_date = #{lastAttemptDate},
+            </if>
+            <if test="accountExpiredDate != null">
+                account_expired_date = #{accountExpiredDate},
+            </if>
+            <if test="credentialsExpiredDate != null">
+                credentials_expired_date = #{credentialsExpiredDate},
+            </if>
+            <if test="enable != null">
+                enable = #{enable},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 用户登录失败尝试+1，并记录最后一次尝试登录失败的时间 -->
+    <update id="updateFailAttemptTimes" parameterType="java.lang.String">
+        update user
+        set attempt_times = attempt_times + 1, last_attempt_date = now()
+        where username = #{username}
+    </update>
+
+    <!-- 重置用户登录失败尝试次数 -->
+    <update id="resetFailAttemptTimes" parameterType="java.lang.String">
+        update user
+        set attempt_times = 0
+        where username = #{username}
+    </update>
+
+    <!-- 查询所有记录 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, username, password, attempt_times, last_attempt_date, role_id
+        from user
+    </select>
+
+</mapper>
