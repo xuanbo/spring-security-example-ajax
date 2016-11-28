@@ -2,6 +2,8 @@
 
 spring security学习，采用Java Config配置。
 
+session管理踩坑的地方，UserDetail的实现类需要重写equals和hashCode方法，security会调用做比较。。
+
 ##  1.实现的功能
 
 *   自定义认证，用户是否被禁用、账号是否过期、登录尝试失败5次锁定用户账号
