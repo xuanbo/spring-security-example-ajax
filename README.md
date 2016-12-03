@@ -26,7 +26,7 @@ session管理踩坑的地方，UserDetail的实现类需要重写equals和hashCo
 
 ##  3.闲的蛋疼
 
-*   实现一个权限的后台管理系统，角色、权限、资源的分配
+*   实现一个权限的后台管理系统，角色、权限、资源的分配。简单的后台管理系统：[mini](https://github.com/xuanbo/mini)
 
 ##  4.总结
 
